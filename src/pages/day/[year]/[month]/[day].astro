@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import DailyView from '../../../../components/DailyView.astro';
+import { getCalendarDay, getStaticDateKeys } from '../../../../lib/calendar';
+import { getDailyContent } from '../../../../lib/content';
+
+export function getStaticPaths() {
+  return getStaticDateKeys().map((date) => {
+    const [year, month, day] = date.split('-');
+    return { params: { year, month, day }, props: { date } };
+  });
+}
+
+interface Props { date: string }
+const { date } = Astro.props;
+const calendarDay = getCalendarDay(date);
+const content = getDailyContent(date);
+const title = `${calendarDay.year} 年 ${calendarDay.month} 月 ${calendarDay.day} 日｜${calendarDay.lunar.display}｜島日曆`;
+---
+
+<BaseLayout {title} description={`${calendarDay.date} ${calendarDay.weekday}，農曆${calendarDay.lunar.display}，${calendarDay.ganzhi.year}年，生肖${calendarDay.zodiac}。`}>
+  <DailyView {calendarDay} {content} />
+</BaseLayout>

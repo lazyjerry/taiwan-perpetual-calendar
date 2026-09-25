@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DatePicker from '../components/DatePicker.astro';
+import { getTaipeiDateKey } from '../lib/calendar';
+---
+
+<BaseLayout title="查日子｜島日曆">
+  <section class="lookup-page">
+    <header>
+      <p>1901–2100</p>
+      <h1>找一個日子</h1>
+      <span>輸入日期，查看農曆、干支、節氣與宜忌。</span>
+    </header>
+    <DatePicker value={getTaipeiDateKey()} />
+    <div class="lookup-result" data-lookup-result aria-live="polite">
+      <noscript>這個查詢功能需要 JavaScript。2020–2040 年的固定日期頁仍可在關閉 JavaScript 時閱讀。</noscript>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { getCalendarDay } from '../lib/calendar';
+  import { dayHref, getTaipeiDateKey, isEngineDate } from '../lib/dates';
+  import { getDailyContent } from '../lib/content';
+
+  const params = new URLSearchParams(window.location.search);
+  const requested = params.get('date') ?? getTaipeiDateKey();
+  const result = document.querySelector<HTMLElement>('[data-lookup-result]');
+  const input = document.querySelector<HTMLInputElement>('input[name="date"]');
+  if (input && isEngineDate(requested)) input.value = requested;
+
+  if (result && isEngineDate(requested)) {
+    const day = getCalendarDay(requested);
+    const content = getDailyContent(requested);
+    const term = day.solarTerm ? `<span class="lookup-term">${day.solarTerm}</span>` : '';
+    result.innerHTML = `
+      <article class="lookup-card">
+        <img src="${content.image.file}" alt="${content.image.alt}" width="1400" height="900">
+        <div class="lookup-card-body">
+          ${term}
+          <p class="lookup-date">${day.year} / ${String(day.month).padStart(2, '0')} / ${String(day.day).padStart(2, '0')}，${day.weekday}</p>
+          <h2>農曆${day.lunar.display}</h2>
+          <dl>
+            <div><dt>年干支</dt><dd>${day.ganzhi.year}</dd></div>
+            <div><dt>月干支</dt><dd>${day.ganzhi.month}</dd></div>
+            <div><dt>日干支</dt><dd>${day.ganzhi.day}</dd></div>
+            <div><dt>生肖</dt><dd>${day.zodiac}</dd></div>
+          </dl>
+          <p><b>宜</b>${day.almanac.yi.slice(0, 8).join('、') || '諸事皆宜'}</p>
+          <p><b>忌</b>${day.almanac.ji.slice(0, 8).join('、') || '無'}</p>
+          <blockquote>「${content.quote.text}」</blockquote>
+          <a class="permalink" href="${dayHref(day.date)}">開啟這一天的固定連結</a>
+        </div>
+      </article>`;
+  } else if (result) {
+    result.innerHTML = '<p class="error-message">日期超出支援範圍，請選擇 1901–2100 年之間的日期。</p>';
+  }
+</script>

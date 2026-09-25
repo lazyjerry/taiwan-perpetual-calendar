@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DailyView from '../components/DailyView.astro';
+import { getCalendarDay, getTaipeiDateKey } from '../lib/calendar';
+import { getDailyContent } from '../lib/content';
+
+const fallbackDate = getTaipeiDateKey();
+const calendarDay = getCalendarDay(fallbackDate);
+const content = getDailyContent(fallbackDate);
+---
+
+<BaseLayout title="島日曆｜今日農曆、節氣與宜忌">
+  <DailyView {calendarDay} {content} />
+</BaseLayout>
+
+<script>
+  import { dayHref, getTaipeiDateKey } from '../lib/dates';
+  const today = getTaipeiDateKey();
+  const currentFallback = document.querySelector<HTMLElement>('[data-day-page]')?.dataset.dayPage;
+  if (today !== currentFallback) window.location.replace(dayHref(today));
+</script>

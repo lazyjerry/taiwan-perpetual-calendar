@@ -1,0 +1,24 @@
+---
+import { ENGINE_END_YEAR, ENGINE_START_YEAR } from '../lib/dates';
+
+interface Props { value: string }
+const { value } = Astro.props;
+---
+
+<form class="date-picker" action="/lookup/" method="get" data-date-picker>
+  <label for="calendar-date">選擇日期</label>
+  <input id="calendar-date" name="date" type="date" min={`${ENGINE_START_YEAR}-01-01`} max={`${ENGINE_END_YEAR}-12-31`} value={value} required />
+  <button type="submit">查詢</button>
+</form>
+
+<script>
+  import { dayHref, isEngineDate } from '../lib/dates';
+  document.querySelectorAll<HTMLFormElement>('[data-date-picker]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      const input = form.querySelector<HTMLInputElement>('input[name="date"]');
+      if (!input || !isEngineDate(input.value)) return;
+      event.preventDefault();
+      window.location.assign(dayHref(input.value));
+    });
+  });
+</script>

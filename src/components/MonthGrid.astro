@@ -1,0 +1,37 @@
+---
+import type { CalendarDay } from '../lib/calendar';
+import { dayHref } from '../lib/calendar';
+
+interface Props { days: CalendarDay[] }
+const { days } = Astro.props;
+const first = days[0];
+const startOffset = new Date(Date.UTC(first.year, first.month - 1, 1)).getUTCDay();
+const cells: Array<CalendarDay | null> = [...Array(startOffset).fill(null), ...days];
+while (cells.length % 7 !== 0) cells.push(null);
+const weeks = Array.from({ length: cells.length / 7 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
+---
+
+<div class="calendar-wrap">
+  <table class="month-grid">
+    <thead><tr>{['日', '一', '二', '三', '四', '五', '六'].map((name) => <th scope="col">{name}</th>)}</tr></thead>
+    <tbody>
+      {weeks.map((week) => (
+        <tr>
+          {week.map((day) => day ? (
+            <td data-calendar-date={day.date}>
+              <a href={dayHref(day.date)} aria-label={`${day.month} 月 ${day.day} 日，${day.lunar.display}`}>
+                <span>{day.day}</span>
+                <small>{day.solarTerm ?? (day.lunar.day === 1 ? `${day.lunar.isLeapMonth ? '閏' : ''}${day.lunar.monthText}月` : day.lunar.dayText)}</small>
+              </a>
+            </td>
+          ) : <td class="empty" aria-hidden="true"></td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  import { getTaipeiDateKey } from '../lib/dates';
+  document.querySelector(`[data-calendar-date="${getTaipeiDateKey()}"]`)?.classList.add('today');
+</script>

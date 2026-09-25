@@ -1,0 +1,86 @@
+---
+import type { CalendarDay } from '../lib/calendar';
+import type { DailyContent } from '../lib/content';
+import { addDays, dayHref, monthHref } from '../lib/calendar';
+import DatePicker from './DatePicker.astro';
+
+interface Props {
+  calendarDay: CalendarDay;
+  content: DailyContent;
+}
+
+const { calendarDay, content } = Astro.props;
+const previous = addDays(calendarDay.date, -1);
+const next = addDays(calendarDay.date, 1);
+const formatShort = (dateKey: string) => {
+  const [, month, day] = dateKey.split('-').map(Number);
+  return `${month}/${day}`;
+};
+---
+
+<section class="day-stage" data-day-page={calendarDay.date}>
+  <div class="day-toolbar">
+    <DatePicker value={calendarDay.date} />
+    <a class="month-link" href={monthHref(calendarDay.year, calendarDay.month)}>查看 {calendarDay.month} 月</a>
+  </div>
+
+  <article class="daily-sheet">
+    <h1 class="visually-hidden">{calendarDay.year} 年 {calendarDay.month} 月 {calendarDay.day} 日</h1>
+    <figure class="daily-image">
+      <img src={content.image.file} alt={content.image.alt} width="1400" height="900" loading="eager" />
+      <figcaption>
+        <span>{calendarDay.solarTerm ?? '今日風物'}</span>
+        <small data-today-label hidden>今天</small>
+      </figcaption>
+    </figure>
+
+    <div class="date-block">
+      <div class="gregorian">
+        <span class="year">{calendarDay.year}</span>
+        <span class="month-day">{String(calendarDay.month).padStart(2, '0')}<i>/</i>{String(calendarDay.day).padStart(2, '0')}</span>
+        <span class="weekday">{calendarDay.weekday}</span>
+      </div>
+      <div class="lunar-date">
+        <span>農曆</span>
+        <strong>{calendarDay.lunar.display}</strong>
+      </div>
+    </div>
+
+    <dl class="traditional-info">
+      <div><dt>年干支</dt><dd>{calendarDay.ganzhi.year}</dd></div>
+      <div><dt>月干支</dt><dd>{calendarDay.ganzhi.month}</dd></div>
+      <div><dt>日干支</dt><dd>{calendarDay.ganzhi.day}</dd></div>
+      <div><dt>生肖</dt><dd>{calendarDay.zodiac}</dd></div>
+    </dl>
+
+    <div class="almanac">
+      <section class="yi">
+        <h2><span>宜</span>順勢而為</h2>
+        <p>{calendarDay.almanac.yi.slice(0, 8).join('、') || '諸事皆宜'}</p>
+      </section>
+      <section class="ji">
+        <h2><span>忌</span>宜稍緩行</h2>
+        <p>{calendarDay.almanac.ji.slice(0, 8).join('、') || '無'}</p>
+      </section>
+    </div>
+
+    <blockquote>
+      <p>「{content.quote.text}」</p>
+      <footer>今日一句</footer>
+    </blockquote>
+  </article>
+
+  <nav class="day-navigation" aria-label="日期切換">
+    <a href={dayHref(previous)}><span aria-hidden="true">←</span><small>上一天</small><strong>{formatShort(previous)}</strong></a>
+    <a href={dayHref(next)}><small>下一天</small><strong>{formatShort(next)}</strong><span aria-hidden="true">→</span></a>
+  </nav>
+</section>
+
+<script>
+  import { getTaipeiDateKey } from '../lib/dates';
+  const page = document.querySelector<HTMLElement>('[data-day-page]');
+  if (page?.dataset.dayPage === getTaipeiDateKey()) {
+    const label = page.querySelector<HTMLElement>('[data-today-label]');
+    if (label) label.hidden = false;
+  }
+</script>

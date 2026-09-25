@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = '台灣時區的靜態萬年曆，顯示農曆、干支、生肖、節氣與每日宜忌。'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#a5382c" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要內容</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="島日曆首頁">
+        <span class="brand-mark" aria-hidden="true">曆</span>
+        <span>
+          <strong>島日曆</strong>
+          <small>以台灣時間記下每一天</small>
+        </span>
+      </a>
+      <nav aria-label="主選單">
+        <a href="/">今日</a>
+        <a href="/lookup/">查日子</a>
+      </nav>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>曆法資料支援 1901–2100 年。靜態日頁為 2020–2040 年。</p>
+      <p>宜忌僅供傳統文化參考。</p>
+    </footer>
+  </body>
+</html>

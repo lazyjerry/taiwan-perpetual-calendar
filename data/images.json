@@ -1,0 +1,14 @@
+[
+  {"id":1,"month":1,"file":"/images/daily/months/01.webp","alt":"一月霜色山徑與高山雲海","theme":"winter"},
+  {"id":2,"month":2,"file":"/images/daily/months/02.webp","alt":"二月梅花初綻與晨曦雲海","theme":"winter"},
+  {"id":3,"month":3,"file":"/images/daily/months/03.webp","alt":"三月新茶、初櫻與春霧山谷","theme":"spring"},
+  {"id":4,"month":4,"file":"/images/daily/months/04.webp","alt":"四月春雨中的翠綠茶山","theme":"spring"},
+  {"id":5,"month":5,"file":"/images/daily/months/05.webp","alt":"五月油桐花與暖春山谷","theme":"spring"},
+  {"id":6,"month":6,"file":"/images/daily/months/06.webp","alt":"六月梅雨荷芽與白鷺","theme":"summer"},
+  {"id":7,"month":7,"file":"/images/daily/months/07.webp","alt":"七月盛放荷塘與夏日山嵐","theme":"summer"},
+  {"id":8,"month":8,"file":"/images/daily/months/08.webp","alt":"八月晴雨後的水田與蓮蓬","theme":"summer"},
+  {"id":9,"month":9,"file":"/images/daily/months/09.webp","alt":"九月初白芒草與清朗山谷","theme":"autumn"},
+  {"id":10,"month":10,"file":"/images/daily/months/10.webp","alt":"十月金色芒草與楓紅晨光","theme":"autumn"},
+  {"id":11,"month":11,"file":"/images/daily/months/11.webp","alt":"十一月銅紅芒草與深秋山徑","theme":"autumn"},
+  {"id":12,"month":12,"file":"/images/daily/months/12.webp","alt":"十二月霜色山徑與冬晨雲海","theme":"winter"}
+]
