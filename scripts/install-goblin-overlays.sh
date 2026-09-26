@@ -96,22 +96,23 @@ EOF
 
 cat > "$project_root/src/lib/goblin-overlay.ts" <<'EOF'
 import { getBackgroundTheme, getGoblinOverlay, type BackgroundTheme } from './goblins';
-import { getGoblinPlacement } from './goblin-placements';
+import { getGoblinPlacement, projectGoblinPlacement } from './goblin-placements';
 
 const goblinSceneScale = 0.34;
 
 const themeFilters: Record<BackgroundTheme, string> = {
-  winter: 'drop-shadow(0 10px 16px rgba(20, 30, 38, .34)) saturate(.88) brightness(.96)',
-  spring: 'drop-shadow(0 10px 16px rgba(24, 42, 30, .28)) saturate(.92) brightness(1.02)',
-  summer: 'drop-shadow(0 12px 18px rgba(18, 38, 32, .32)) saturate(.9) brightness(.98)',
-  autumn: 'drop-shadow(0 12px 18px rgba(54, 31, 18, .34)) saturate(.94) sepia(.08)'
+  winter: 'drop-shadow(0 8px 13px rgba(20, 30, 38, .3)) saturate(.88) brightness(.96)',
+  spring: 'drop-shadow(0 8px 13px rgba(24, 42, 30, .25)) saturate(.92) brightness(1.02)',
+  summer: 'drop-shadow(0 8px 13px rgba(18, 38, 32, .28)) saturate(.9) brightness(.98)',
+  autumn: 'drop-shadow(0 8px 13px rgba(54, 31, 18, .3)) saturate(.94) sepia(.08)'
 };
 
 function mountGoblin(stage: HTMLElement): void {
   if (stage.dataset.goblinMounted === 'true') return;
   const dateKey = stage.dataset.dayPage;
   const figure = stage.querySelector<HTMLElement>('.daily-image');
-  if (!dateKey || !figure) return;
+  const backdrop = figure?.querySelector<HTMLImageElement>('img');
+  if (!dateKey || !figure || !backdrop) return;
 
   stage.dataset.goblinMounted = 'true';
   const goblin = getGoblinOverlay(dateKey);
@@ -128,7 +129,7 @@ function mountGoblin(stage: HTMLElement): void {
   image.src = goblin.image;
 
   const draw = () => {
-    if (!image.complete || image.naturalWidth === 0) return;
+    if (!image.complete || image.naturalWidth === 0 || !backdrop.complete || backdrop.naturalWidth === 0) return;
     const width = figure.clientWidth;
     const height = figure.clientHeight;
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
@@ -139,21 +140,38 @@ function mountGoblin(stage: HTMLElement): void {
 
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     context.clearRect(0, 0, width, height);
+
+    const projected = projectGoblinPlacement(
+      placement,
+      backdrop.naturalWidth,
+      backdrop.naturalHeight,
+      width,
+      height
+    );
+    const drawHeight = projected.backgroundHeight * goblin.position.scale * goblinSceneScale * placement.scale;
+    const drawWidth = drawHeight * (image.naturalWidth / image.naturalHeight);
+    const groundSink = drawHeight * 0.025;
+
+    context.save();
+    context.globalAlpha = 0.2;
+    context.filter = 'blur(4px)';
+    context.fillStyle = '#17261d';
+    context.beginPath();
+    context.ellipse(projected.x, projected.y + groundSink, drawWidth * 0.3, drawHeight * 0.035, 0, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+
+    context.save();
     context.globalAlpha = 0.94;
     context.filter = themeFilters[theme];
-
-    const drawHeight = height * goblin.position.scale * goblinSceneScale * placement.scale;
-    const drawWidth = drawHeight * (image.naturalWidth / image.naturalHeight);
-    const centerX = width * placement.x;
-    const bottomY = height * placement.y;
-    context.save();
-    context.translate(centerX, bottomY);
+    context.translate(projected.x, projected.y + groundSink);
     context.scale(placement.x > 0.5 ? -1 : 1, 1);
     context.drawImage(image, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
     context.restore();
   };
 
   image.addEventListener('load', draw, { once: true });
+  backdrop.addEventListener('load', draw, { once: true });
   new ResizeObserver(draw).observe(figure);
 }
 
@@ -168,6 +186,7 @@ if (document.readyState === 'loading') {
 }
 
 new MutationObserver(mountExisting).observe(document.documentElement, { childList: true, subtree: true });
+
 EOF
 
 cat > "$project_root/tests/goblins.test.ts" <<'EOF'
