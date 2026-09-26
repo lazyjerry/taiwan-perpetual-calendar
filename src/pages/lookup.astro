@@ -22,6 +22,7 @@ import { getTaipeiDateKey } from '../lib/calendar';
   import { getCalendarDay } from '../lib/calendar';
   import { addDays, dayHref, getTaipeiDateKey, isEngineDate, isStaticDate, monthHref } from '../lib/dates';
   import { getDailyContent } from '../lib/content';
+  import '../lib/goblin-overlay';
 
   const params = new URLSearchParams(window.location.search);
   const pathMatch = /^\/day\/(\d{4})\/(\d{2})\/(\d{2})\/?$/.exec(window.location.pathname);
