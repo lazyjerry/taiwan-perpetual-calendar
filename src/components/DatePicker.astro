@@ -18,7 +18,8 @@ const { value } = Astro.props;
       const input = form.querySelector<HTMLInputElement>('input[name="date"]');
       if (!input || !isEngineDate(input.value)) return;
       event.preventDefault();
-      window.location.assign(dayHref(input.value));
+      const navigate = new CustomEvent('calendar:navigate', { bubbles: true, cancelable: true, detail: { date: input.value } });
+      if (form.dispatchEvent(navigate)) window.location.assign(dayHref(input.value));
     });
   });
 </script>

@@ -31,6 +31,8 @@ button, input { font: inherit; }
 .brand small { margin-top: .15rem; color: var(--muted); font-size: .7rem; }
 .site-header nav { display: flex; gap: 1.4rem; font-size: .9rem; }
 .site-header nav a { text-underline-offset: .3em; }
+.nav-more, .nav-drawer-close { display: none; border: 0; padding: 0; background: none; color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: .3em; }
+.nav-drawer { display: contents; }
 
 main { width: 100%; }
 .day-stage, .calendar-page, .lookup-page { width: min(1080px, calc(100% - 2rem)); margin: 2.5rem auto 5rem; }
@@ -154,6 +156,12 @@ main { width: 100%; }
   .lookup-card { grid-template-columns: 1fr; }
   .lookup-card > img { min-height: 240px; max-height: 330px; }
   .site-footer { flex-direction: column; align-items: flex-start; }
+  .nav-more { display: inline; }
+  .nav-drawer { display: flex; flex-direction: column; gap: 1.6rem; position: fixed; z-index: 30; top: 0; right: 0; bottom: 0; width: min(17rem, 80vw); padding: 5rem 1.8rem 2rem; background: var(--paper); border-left: 1px solid var(--line); box-shadow: var(--shadow); font-size: 1.05rem; transform: translateX(100%); visibility: hidden; transition: transform .25s ease, visibility 0s linear .25s; }
+  .nav-drawer.is-open { transform: none; visibility: visible; transition: transform .25s ease; }
+  .nav-drawer-close { display: grid; place-items: center; position: absolute; top: 1.2rem; right: 1.4rem; width: 2.4rem; aspect-ratio: 1; border: 1px solid var(--line); font-size: 1.3rem; text-decoration: none; }
+  body.nav-drawer-open { overflow: hidden; }
+  body.nav-drawer-open::after { content: ''; position: fixed; inset: 0; z-index: 29; background: rgba(36, 33, 29, .3); }
 }
 
 @media (prefers-reduced-motion: reduce) {

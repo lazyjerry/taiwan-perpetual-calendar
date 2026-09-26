@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+import { addDays, dayHref, getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
 import { API_UPDATED_AT } from '../lib/api';
 
 interface Props {
@@ -14,7 +14,8 @@ const {
   description = '台灣時區的靜態萬年曆，顯示農曆、干支、生肖、節氣與每日宜忌。',
   navMonth
 } = Astro.props;
-const today = parseDateKey(getTaipeiDateKey());
+const todayKey = getTaipeiDateKey();
+const today = parseDateKey(todayKey);
 const navYear = navMonth?.year ?? today.year;
 const navMonthNumber = navMonth?.month ?? today.month;
 ---
@@ -43,10 +44,16 @@ const navMonthNumber = navMonth?.month ?? today.month;
           <small>以台灣時間記下每一天</small>
         </span>
       </a>
-      <nav aria-label="主選單">
+      <nav class="site-nav" aria-label="主選單">
+        <a href={dayHref(addDays(todayKey, -1))} data-nav-day="yesterday">昨天</a>
         <a href="/">今日</a>
-        <a href={monthHref(navYear, navMonthNumber)} data-nav-month={navMonth ? undefined : 'today'}>查看 {navMonthNumber} 月</a>
-        <a href="/lookup/">查日子</a>
+        <a href={dayHref(addDays(todayKey, 1))} data-nav-day="tomorrow">明天</a>
+        <button type="button" class="nav-more" data-nav-toggle aria-expanded="false" aria-controls="site-drawer">更多</button>
+        <div class="nav-drawer" id="site-drawer" data-nav-drawer>
+          <button type="button" class="nav-drawer-close" data-nav-close aria-label="關閉選單">×</button>
+          <a href={monthHref(navYear, navMonthNumber)} data-nav-month={navMonth ? undefined : 'today'}>查看 {navMonthNumber} 月</a>
+          <a href="/lookup/">查日子</a>
+        </div>
       </nav>
     </header>
     <main id="main-content">
@@ -63,12 +70,43 @@ const navMonthNumber = navMonth?.month ?? today.month;
 </html>
 
 <script>
-  import { dayHref, getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+  import { addDays, dayHref, getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+  const todayKey = getTaipeiDateKey();
   const link = document.querySelector<HTMLAnchorElement>('[data-nav-month="today"]');
   if (link) {
-    const { year, month } = parseDateKey(getTaipeiDateKey());
+    const { year, month } = parseDateKey(todayKey);
     link.href = monthHref(year, month);
     link.textContent = `查看 ${month} 月`;
+  }
+  document.querySelectorAll<HTMLAnchorElement>('[data-nav-day]').forEach((anchor) => {
+    anchor.href = dayHref(addDays(todayKey, anchor.dataset.navDay === 'yesterday' ? -1 : 1));
+  });
+
+  const drawer = document.querySelector<HTMLElement>('[data-nav-drawer]');
+  const drawerToggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  if (drawer && drawerToggle) {
+    const isOpen = () => drawer.classList.contains('is-open');
+    const setOpen = (open: boolean) => {
+      drawer.classList.toggle('is-open', open);
+      drawerToggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('nav-drawer-open', open);
+      if (open) drawer.querySelector<HTMLElement>('a')?.focus();
+      else if (drawer.contains(document.activeElement)) drawerToggle.focus();
+    };
+    drawerToggle.addEventListener('click', () => setOpen(!isOpen()));
+    drawer.querySelector('[data-nav-close]')?.addEventListener('click', () => setOpen(false));
+    drawer.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a')) setOpen(false);
+    });
+    document.addEventListener('click', (event) => {
+      if (isOpen() && !(event.target as Element).closest('.site-nav')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isOpen()) setOpen(false);
+    });
+    window.matchMedia('(min-width: 721px)').addEventListener('change', (event) => {
+      if (event.matches && isOpen()) setOpen(false);
+    });
   }
 
   const share = document.querySelector<HTMLElement>('[data-share]');
