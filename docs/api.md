@@ -51,7 +51,7 @@ curl https://taiwan-perpetual-calendar.pages.dev/api/day/2026/09/26.json
     "ji": ["移徙", "入宅"]
   },
   "quote": { "id": 265, "text": "感謝那些磨練你的時刻，它們讓你長成了如今的模樣。", "tags": ["成長"] },
-  "image": { "id": 9, "month": 9, "file": "/images/daily/months/09.webp", "alt": "九月初白芒草與清朗山谷", "theme": "autumn" },
+  "image": { "id": 18, "month": 9, "file": "/images/daily/months/09-late.webp", "alt": "九月下半月銀白芒草與金色河谷", "theme": "autumn" },
   "links": {
     "page": "/day/2026/09/26/",
     "api": "/api/day/2026/09/26.json",

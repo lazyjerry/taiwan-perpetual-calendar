@@ -6,7 +6,7 @@ describe('JSON API 資料', () => {
     const payload = buildDayPayload('2026-09-25');
     expect(payload.lunar.display).toBe('八月十五');
     expect(payload.quote.text).toBeTruthy();
-    expect(payload.image.file).toBe('/images/daily/months/09.webp');
+    expect(payload.image.file).toBe('/images/daily/months/09-late.webp');
     expect(payload.links).toEqual({
       page: '/day/2026/09/25/',
       api: '/api/day/2026/09/25.json',
