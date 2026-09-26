@@ -82,7 +82,7 @@ const toTw = OpenCC.Converter({ from: 'cn', to: 'tw' });
 const allowedTags = new Set('平靜、生活、行動、創意、關係、日常、成長、專注、勇氣、反思、取捨、休息、學習、感恩、界線、自在、整理、好奇'.split('、'));
 // 只放行 CJK 漢字、CJK 標點、全形標點、破折號與刪節號；其餘一律視為污染。
 const allowed = /^[一-鿿㐀-䶿　-〿＀-￯—…]+$/u;
-const normalize = (s) => s.replace(/[　-〿＀-￯—…]/gu, '');
+const normalize = (s) => s.replace(/[　-〿＀-￯—…]/gu, '').replace(/臺/gu, '台');
 // 簡繁一對多的共用字（念／唸、只／隻、后／後…）在台灣繁體裡本身就合法，
 // OpenCC cn→tw 會把它們再換一次而誤判，逐字比對時放行。
 const sharedChars = new Set(Array.from('只念干后面里云系台制志周征松借布采划冲舍余于几向咸准秋谷范表丑才家回困卷克蒙折致朱御愿岳筑症沾游郁它升涂么'));
