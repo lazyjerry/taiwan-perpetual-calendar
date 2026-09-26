@@ -16,17 +16,25 @@ with sync_playwright() as playwright:
     assert page.get_by_role("heading", name="2026 年 9 月 25 日").count() == 1
     assert page.get_by_text("農曆八月十五", exact=False).count() >= 1
     assert page.locator(".daily-image img").evaluate("image => image.complete && image.naturalWidth > 0")
-    assert page.locator(".daily-image img").get_attribute("src") == "/images/daily/months/09.webp"
+    assert page.locator(".daily-image img").get_attribute("src") == "/images/daily/months/09-late.webp"
     assert page.get_by_role("link", name="9/24", exact=False).get_attribute("href") == "/day/2026/09/24/"
+    assert page.locator(".site-header nav").get_by_role("link", name="查看 9 月").get_attribute("href") == "/calendar/2026/09/"
+    assert page.locator(".date-picker").count() == 0
     page.screenshot(path=str(ARTIFACT_DIR / "day-desktop.png"), full_page=True)
 
     page.goto(f"{BASE_URL}/calendar/2026/09/", wait_until="networkidle")
     assert page.get_by_role("link", name="9 月 25 日，八月十五").count() == 1
+    assert page.locator(".date-picker").count() == 0
     page.screenshot(path=str(ARTIFACT_DIR / "month-desktop.png"), full_page=True)
 
     page.goto(f"{BASE_URL}/lookup/?date=1901-01-01", wait_until="networkidle")
     assert page.locator(".lookup-card").count() == 1
     assert page.get_by_text("1901 / 01 / 01", exact=False).count() == 1
+
+    day_json = page.request.get(f"{BASE_URL}/api/day/2026/09/25.json")
+    assert day_json.ok and day_json.json()["lunar"]["display"] == "八月十五"
+    month_json = page.request.get(f"{BASE_URL}/api/month/2026/09.json")
+    assert month_json.ok and len(month_json.json()["days"]) == 30
 
     mobile = browser.new_page(viewport={"width": 390, "height": 844})
     mobile.goto(f"{BASE_URL}/day/2026/09/25/", wait_until="networkidle")
