@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+import { API_UPDATED_AT } from '../lib/api';
 
 interface Props {
   title: string;
@@ -56,7 +57,7 @@ const navMonthNumber = navMonth?.month ?? today.month;
         <button type="button" class="share-button" data-share-button>分享這一頁</button>
         <span class="share-status" data-share-status role="status" aria-live="polite"></span>
       </div>
-      <p>語錄與影像由 AI 生成，宜忌僅供傳統文化參考，內容請自行斟酌。</p>
+      <p>語錄與影像由 AI 生成，宜忌僅供傳統文化參考，內容請自行斟酌。 | 最後更新時間：{API_UPDATED_AT}</p>
     </footer>
   </body>
 </html>

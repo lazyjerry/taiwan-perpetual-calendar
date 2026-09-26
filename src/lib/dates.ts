@@ -51,6 +51,15 @@ export function getTaipeiDateKey(now = new Date()): string {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+export function getTaipeiDateTime(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+    hourCycle: 'h23', timeZone: 'Asia/Taipei'
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}`;
+}
+
 export function dayHref(dateKey: string): string {
   if (!isStaticDate(dateKey)) return `/lookup/?date=${dateKey}`;
   const { year, month, day } = parseDateKey(dateKey);

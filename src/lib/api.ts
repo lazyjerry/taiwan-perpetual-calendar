@@ -2,9 +2,11 @@ import type { CalendarDay } from './calendar';
 import { getCalendarDay, getMonthDays } from './calendar';
 import type { DailyContent } from './content';
 import { getDailyContent } from './content';
-import { addDays, dayHref, isStaticDate, makeDateKey, monthHref, parseDateKey, STATIC_END_YEAR, STATIC_START_YEAR } from './dates';
+import { addDays, dayHref, getTaipeiDateTime, isStaticDate, makeDateKey, monthHref, parseDateKey, STATIC_END_YEAR, STATIC_START_YEAR } from './dates';
 
 export const API_VERSION = 1;
+// 建置當下的台灣時間，整次建置只算一次；index.json 與頁尾都引用它，兩邊永遠一致。
+export const API_UPDATED_AT = getTaipeiDateTime();
 
 export interface DayPayload extends CalendarDay {
   quote: DailyContent['quote'];
@@ -86,6 +88,7 @@ export function buildApiIndex() {
   return {
     name: '島日曆 API',
     version: API_VERSION,
+    updatedAt: API_UPDATED_AT,
     timezone: 'Asia/Taipei',
     range: {
       start: makeDateKey(STATIC_START_YEAR, 1, 1),

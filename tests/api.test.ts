@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildApiIndex, buildDayPayload, buildMonthPayload, dayApiHref, monthApiHref } from '../src/lib/api';
+import { API_UPDATED_AT, buildApiIndex, buildDayPayload, buildMonthPayload, dayApiHref, monthApiHref } from '../src/lib/api';
 
 describe('JSON API 資料', () => {
   it('日資料包含曆法、語錄、影像與連結', () => {
@@ -38,5 +38,10 @@ describe('JSON API 資料', () => {
 
   it('索引列出支援範圍', () => {
     expect(buildApiIndex().range).toEqual({ start: '2020-01-01', end: '2040-12-31' });
+  });
+
+  it('索引的最後更新時間為台灣時區的 YYYY-MM-DD HH:mm', () => {
+    expect(buildApiIndex().updatedAt).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
+    expect(buildApiIndex().updatedAt).toBe(API_UPDATED_AT);
   });
 });

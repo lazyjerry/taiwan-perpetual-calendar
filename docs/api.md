@@ -14,7 +14,7 @@
 
 | 端點 | 說明 |
 |---|---|
-| `GET /api/index.json` | API 索引：版本、支援範圍與端點樣式。 |
+| `GET /api/index.json` | API 索引：版本、最後更新時間、支援範圍與端點樣式。 |
 | `GET /api/day/{YYYY}/{MM}/{DD}.json` | 單日資料。月、日固定兩位數零填補。 |
 | `GET /api/month/{YYYY}/{MM}.json` | 整月資料，`days` 為該月每一天的單日資料。 |
 
@@ -61,6 +61,37 @@ curl https://taiwan-perpetual-calendar.pages.dev/api/day/2026/09/26.json
   }
 }
 ```
+
+## 索引資料
+
+```bash
+curl https://taiwan-perpetual-calendar.pages.dev/api/index.json
+```
+
+```json
+{
+  "name": "島日曆 API",
+  "version": 1,
+  "updatedAt": "2026-09-26 19:10",
+  "timezone": "Asia/Taipei",
+  "range": { "start": "2020-01-01", "end": "2040-12-31" },
+  "endpoints": {
+    "day": "/api/day/{YYYY}/{MM}/{DD}.json",
+    "month": "/api/month/{YYYY}/{MM}.json"
+  },
+  "docs": "https://github.com/lazyjerry/taiwan-perpetual-calendar/blob/main/docs/api.md"
+}
+```
+
+| 欄位 | 型別 | 說明 |
+|---|---|---|
+| `name` | string | API 名稱。 |
+| `version` | number | API 版本。欄位只增不減；不相容變更會提升版本號。 |
+| `updatedAt` | string | 最後更新時間，`YYYY-MM-DD HH:mm`，台灣時區、24 小時制。即本次建置的時間，整站所有 JSON 都在同一次建置產生，可當作資料版本號使用：值不同代表資料已重新產生，用戶端可據此決定要不要重抓快取。全站頁尾顯示的「最後更新時間」就是這個值。 |
+| `timezone` | string | 固定為 `Asia/Taipei`。 |
+| `range.start` / `range.end` | string | 支援範圍的起訖日期。 |
+| `endpoints.day` / `endpoints.month` | string | 端點路徑樣式，大括號為要代入的零填補數字。 |
+| `docs` | string | 本文件的網址。 |
 
 ## 單日資料欄位
 

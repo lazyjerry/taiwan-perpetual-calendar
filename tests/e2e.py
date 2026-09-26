@@ -44,6 +44,8 @@ with sync_playwright() as playwright:
     assert day_json.ok and day_json.json()["lunar"]["display"] == "八月十五"
     month_json = page.request.get(f"{BASE_URL}/api/month/2026/09.json")
     assert month_json.ok and len(month_json.json()["days"]) == 30
+    index_json = page.request.get(f"{BASE_URL}/api/index.json")
+    assert index_json.ok and f"最後更新時間：{index_json.json()['updatedAt']}" in page.locator(".site-footer p").inner_text()
     sitemap = page.request.get(f"{BASE_URL}/sitemap.xml")
     assert sitemap.ok and "https://taiwan-perpetual-calendar.pages.dev/day/2026/09/25/" in sitemap.text()
 

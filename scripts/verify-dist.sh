@@ -14,6 +14,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 node -e "for (const f of process.argv.slice(1)) JSON.parse(require('fs').readFileSync(f, 'utf8'))" \
   dist/api/index.json dist/api/day/2026/09/25.json dist/api/month/2026/09.json
 grep -Fxq '/day/:year/:month/:day/ /lookup/ 200' dist/_redirects
+node -e "const i = JSON.parse(require('fs').readFileSync('dist/api/index.json', 'utf8')); if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(i.updatedAt)) process.exit(1)"
 grep -Fq 'https://taiwan-perpetual-calendar.pages.dev/day/2026/09/25/' dist/sitemap.xml
 
 forbidden_output="$(find dist -type f \( -name '_worker.js' -o -path '*/functions/*' \) -print -quit)"
