@@ -17,10 +17,11 @@ function stableIndex(value: string, length: number): number {
 }
 
 export function getDailyContent(dateKey: string): DailyContent {
-  const { month } = parseDateKey(dateKey);
-  const image = images.find((candidate) => candidate.month === month);
+  const { month, day } = parseDateKey(dateKey);
+  const fromDay = day <= 15 ? 1 : 16;
+  const image = images.find((candidate) => candidate.month === month && candidate.fromDay === fromDay);
   if (!image) {
-    throw new RangeError(`找不到 ${month} 月的每日影像。`);
+    throw new RangeError(`找不到 ${month} 月 ${fromDay} 日起的每日影像。`);
   }
   return {
     quote: quotes[stableIndex(`quote:${dateKey}`, quotes.length)],
