@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MonthGrid from '../../../components/MonthGrid.astro';
-import DatePicker from '../../../components/DatePicker.astro';
-import { STATIC_END_YEAR, STATIC_START_YEAR, getMonthDays, makeDateKey, monthHref } from '../../../lib/calendar';
+import { STATIC_END_YEAR, STATIC_START_YEAR, getMonthDays, monthHref } from '../../../lib/calendar';
 
 export function getStaticPaths() {
   const paths = [];
@@ -23,14 +22,13 @@ const previousHref = monthHref(previousDate.getUTCFullYear(), previousDate.getUT
 const nextHref = monthHref(nextDate.getUTCFullYear(), nextDate.getUTCMonth() + 1);
 ---
 
-<BaseLayout title={`${year} 年 ${month} 月月曆｜島日曆`}>
+<BaseLayout title={`${year} 年 ${month} 月月曆｜島日曆`} navMonth={{ year, month }}>
   <section class="calendar-page">
     <div class="calendar-heading">
       <div>
         <p>國曆與農曆對照</p>
         <h1><span>{year}</span> 年 <strong>{month}</strong> 月</h1>
       </div>
-      <DatePicker value={makeDateKey(year, month, 1)} />
     </div>
     <nav class="month-navigation" aria-label="月份切換">
       <a href={previousHref}>← 上個月</a>

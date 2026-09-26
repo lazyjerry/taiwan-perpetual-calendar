@@ -9,7 +9,7 @@ const calendarDay = getCalendarDay(fallbackDate);
 const content = getDailyContent(fallbackDate);
 ---
 
-<BaseLayout title="島日曆｜今日農曆、節氣與宜忌">
+<BaseLayout title="島日曆｜今日農曆、節氣與宜忌" navMonth={{ year: calendarDay.year, month: calendarDay.month }}>
   <DailyView {calendarDay} {content} />
 </BaseLayout>
 

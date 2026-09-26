@@ -1,8 +1,7 @@
 ---
 import type { CalendarDay } from '../lib/calendar';
 import type { DailyContent } from '../lib/content';
-import { addDays, dayHref, monthHref } from '../lib/calendar';
-import DatePicker from './DatePicker.astro';
+import { addDays, dayHref } from '../lib/calendar';
 
 interface Props {
   calendarDay: CalendarDay;
@@ -19,11 +18,6 @@ const formatShort = (dateKey: string) => {
 ---
 
 <section class="day-stage" data-day-page={calendarDay.date}>
-  <div class="day-toolbar">
-    <DatePicker value={calendarDay.date} />
-    <a class="month-link" href={monthHref(calendarDay.year, calendarDay.month)}>查看 {calendarDay.month} 月</a>
-  </div>
-
   <article class="daily-sheet">
     <h1 class="visually-hidden">{calendarDay.year} 年 {calendarDay.month} 月 {calendarDay.day} 日</h1>
     <figure class="daily-image">

@@ -1,15 +1,21 @@
 ---
 import '../styles/global.css';
+import { getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
 
 interface Props {
   title: string;
   description?: string;
+  navMonth?: { year: number; month: number };
 }
 
 const {
   title,
-  description = '台灣時區的靜態萬年曆，顯示農曆、干支、生肖、節氣與每日宜忌。'
+  description = '台灣時區的靜態萬年曆，顯示農曆、干支、生肖、節氣與每日宜忌。',
+  navMonth
 } = Astro.props;
+const today = parseDateKey(getTaipeiDateKey());
+const navYear = navMonth?.year ?? today.year;
+const navMonthNumber = navMonth?.month ?? today.month;
 ---
 
 <!doctype html>
@@ -37,6 +43,7 @@ const {
       </a>
       <nav aria-label="主選單">
         <a href="/">今日</a>
+        <a href={monthHref(navYear, navMonthNumber)} data-nav-month={navMonth ? undefined : 'today'}>查看 {navMonthNumber} 月</a>
         <a href="/lookup/">查日子</a>
       </nav>
     </header>
@@ -49,3 +56,13 @@ const {
     </footer>
   </body>
 </html>
+
+<script>
+  import { getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+  const link = document.querySelector<HTMLAnchorElement>('[data-nav-month="today"]');
+  if (link) {
+    const { year, month } = parseDateKey(getTaipeiDateKey());
+    link.href = monthHref(year, month);
+    link.textContent = `查看 ${month} 月`;
+  }
+</script>
