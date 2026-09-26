@@ -100,6 +100,9 @@ main { width: 100%; }
 .month-grid td:hover:not(.empty) { background: rgba(63,102,94,.08); }
 
 .lookup-page { max-width: 900px; }
+.lookup-page--day-route { max-width: 880px; }
+.lookup-page--day-route > header, .lookup-page--day-route > .date-picker { display: none; }
+.lookup-page--day-route .day-stage { width: 100%; margin: 0; }
 .lookup-page > header { margin-bottom: 1.5rem; }
 .lookup-page h1 { margin: 0 0 .5rem; font-size: clamp(2.4rem, 7vw, 5rem); font-weight: 600; }
 .lookup-page header span { color: var(--muted); }

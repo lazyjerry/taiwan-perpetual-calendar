@@ -15,11 +15,13 @@ with sync_playwright() as playwright:
     page.goto(f"{BASE_URL}/day/2026/09/25/", wait_until="networkidle")
     assert page.get_by_role("heading", name="2026 年 9 月 25 日").count() == 1
     assert page.get_by_text("農曆八月十五", exact=False).count() >= 1
+    assert page.title() == "2026 年 9 月 25 日｜八月十五｜島日曆"
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == f"{BASE_URL}/day/2026/09/25/"
     assert page.locator(".daily-image img").evaluate("image => image.complete && image.naturalWidth > 0")
     assert page.locator(".daily-image img").get_attribute("src") == "/images/daily/months/09-late.webp"
     assert page.get_by_role("link", name="9/24", exact=False).get_attribute("href") == "/day/2026/09/24/"
     assert page.locator(".site-header nav").get_by_role("link", name="查看 9 月").get_attribute("href") == "/calendar/2026/09/"
-    assert page.locator(".date-picker").count() == 0
+    assert page.locator(".date-picker").is_hidden()
     page.screenshot(path=str(ARTIFACT_DIR / "day-desktop.png"), full_page=True)
 
     page.goto(f"{BASE_URL}/calendar/2026/09/", wait_until="networkidle")
@@ -35,18 +37,14 @@ with sync_playwright() as playwright:
     assert day_json.ok and day_json.json()["lunar"]["display"] == "八月十五"
     month_json = page.request.get(f"{BASE_URL}/api/month/2026/09.json")
     assert month_json.ok and len(month_json.json()["days"]) == 30
+    sitemap = page.request.get(f"{BASE_URL}/sitemap.xml")
+    assert sitemap.ok and "https://taiwan-perpetual-calendar.pages.dev/day/2026/09/25/" in sitemap.text()
 
     mobile = browser.new_page(viewport={"width": 390, "height": 844})
     mobile.goto(f"{BASE_URL}/day/2026/09/25/", wait_until="networkidle")
     assert mobile.locator("body").evaluate("node => node.scrollWidth <= window.innerWidth")
     mobile.screenshot(path=str(ARTIFACT_DIR / "day-mobile.png"), full_page=True)
     mobile.close()
-
-    no_script = browser.new_context(java_script_enabled=False)
-    static_page = no_script.new_page()
-    static_page.goto(f"{BASE_URL}/day/2026/09/25/", wait_until="load")
-    assert static_page.get_by_text("農曆八月十五", exact=False).count() >= 1
-    no_script.close()
 
     assert not console_errors, f"瀏覽器 console 錯誤：{console_errors}"
     context.close()

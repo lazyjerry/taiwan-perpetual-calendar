@@ -6,12 +6,12 @@
 
 ## 功能範圍
 
-- 2020–2040 年：產生 `/day/YYYY/MM/DD/` 固定日頁與 `/calendar/YYYY/MM/` 月曆。
+- 2020–2040 年：`/day/YYYY/MM/DD/` 路徑透過 Cloudflare Pages rewrite 共用 `/lookup/` 靜態頁，由瀏覽器計算日曆內容；`/calendar/YYYY/MM/` 為靜態月曆。
 - 1901–2100 年：由 `/lookup/` 在瀏覽器端計算。
 - 顯示國曆、農曆、星期、二十四節氣、年月日干支、生肖與宜忌。
 - 每日語錄依日期雜湊穩定選取，每個月份對應一張專屬影像。
-- 日期固定頁在關閉 JavaScript 時仍可閱讀主要內容。
-- JSON API：`/api/day/YYYY/MM/DD.json` 與 `/api/month/YYYY/MM.json`，範圍同靜態日頁，說明見 [docs/api.md](docs/api.md)。
+- 日頁透過 JavaScript 更新頁面內容與 SEO metadata；`/sitemap.xml` 列出支援的日頁與月頁。
+- JSON API：`/api/day/YYYY/MM/DD.json` 與 `/api/month/YYYY/MM.json`，範圍同日頁，說明見 [docs/api.md](docs/api.md)。
 
 ## 本機開發
 

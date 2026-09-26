@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://taiwan-perpetual-calendar.pages.dev/sitemap.xml

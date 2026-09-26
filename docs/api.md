@@ -4,7 +4,7 @@
 
 - Base URL：`https://taiwan-perpetual-calendar.pages.dev`
 - 時區：所有日期以 `Asia/Taipei` 為準。
-- 支援範圍：2020-01-01 至 2040-12-31（與靜態日頁相同）。範圍外的日期不會有對應檔案，回應為 404。
+- 支援範圍：2020-01-01 至 2040-12-31（與日頁相同）。範圍外的日期不會有對應檔案，回應為 404。
 - 編碼：UTF-8，`Content-Type: application/json`。
 - CORS：`Access-Control-Allow-Origin: *`，瀏覽器可直接跨網域讀取。
 - 快取：`Cache-Control: public, max-age=86400`。
