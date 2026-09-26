@@ -52,18 +52,51 @@ const navMonthNumber = navMonth?.month ?? today.month;
       <slot />
     </main>
     <footer class="site-footer">
-      <p>曆法資料支援 1901–2100 年。靜態日頁為 2020–2040 年。</p>
-      <p>宜忌僅供傳統文化參考。</p>
+      <div class="share" data-share hidden>
+        <button type="button" class="share-button" data-share-button>分享這一頁</button>
+        <span class="share-status" data-share-status role="status" aria-live="polite"></span>
+      </div>
+      <p>語錄與影像由 AI 生成，宜忌僅供傳統文化參考，內容請自行斟酌。</p>
     </footer>
   </body>
 </html>
 
 <script>
-  import { getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
+  import { dayHref, getTaipeiDateKey, monthHref, parseDateKey } from '../lib/dates';
   const link = document.querySelector<HTMLAnchorElement>('[data-nav-month="today"]');
   if (link) {
     const { year, month } = parseDateKey(getTaipeiDateKey());
     link.href = monthHref(year, month);
     link.textContent = `查看 ${month} 月`;
+  }
+
+  const share = document.querySelector<HTMLElement>('[data-share]');
+  const shareButton = share?.querySelector<HTMLButtonElement>('[data-share-button]');
+  const shareStatus = share?.querySelector<HTMLElement>('[data-share-status]');
+  if (share && shareButton && shareStatus) {
+    share.hidden = false;
+    let statusTimer: ReturnType<typeof setTimeout> | undefined;
+    const showStatus = (text: string) => {
+      shareStatus.textContent = text;
+      clearTimeout(statusTimer);
+      statusTimer = setTimeout(() => { shareStatus.textContent = ''; }, 3000);
+    };
+    shareButton.addEventListener('click', async () => {
+      const dayPage = document.querySelector<HTMLElement>('[data-day-page]')?.dataset.dayPage;
+      const url = dayPage ? new URL(dayHref(dayPage), window.location.origin).href : window.location.href;
+      const title = document.title;
+      const text = document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '';
+      try {
+        if (typeof navigator.share === 'function') {
+          await navigator.share({ title, text, url });
+          return;
+        }
+        await navigator.clipboard.writeText(url);
+        showStatus('已複製連結');
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        showStatus('無法分享，請手動複製網址');
+      }
+    });
   }
 </script>

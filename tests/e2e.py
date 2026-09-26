@@ -8,6 +8,7 @@ ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context(viewport={"width": 1440, "height": 1000})
+    context.grant_permissions(["clipboard-read", "clipboard-write"])
     page = context.new_page()
     console_errors = []
     page.on("console", lambda message: console_errors.append(message.text) if message.type == "error" else None)
@@ -22,6 +23,12 @@ with sync_playwright() as playwright:
     assert page.get_by_role("link", name="9/24", exact=False).get_attribute("href") == "/day/2026/09/24/"
     assert page.locator(".site-header nav").get_by_role("link", name="查看 9 月").get_attribute("href") == "/calendar/2026/09/"
     assert page.locator(".date-picker").is_hidden()
+    assert page.get_by_text("曆法資料支援", exact=False).count() == 0
+    share_button = page.locator(".site-footer").get_by_role("button", name="分享這一頁")
+    assert share_button.is_visible()
+    share_button.click()
+    assert page.locator(".share-status").inner_text() == "已複製連結"
+    assert page.evaluate("navigator.clipboard.readText()") == f"{BASE_URL}/day/2026/09/25/"
     page.screenshot(path=str(ARTIFACT_DIR / "day-desktop.png"), full_page=True)
 
     page.goto(f"{BASE_URL}/calendar/2026/09/", wait_until="networkidle")
