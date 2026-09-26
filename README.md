@@ -2,6 +2,8 @@
 
 以 Astro + TypeScript 建立的純靜態萬年曆，部署目標為 Cloudflare Pages。不使用 Pages Functions、Workers、API 或線上資料庫。
 
+線上版本：<https://taiwan-perpetual-calendar.pages.dev/>
+
 ## 功能範圍
 
 - 2020–2040 年：產生 `/day/YYYY/MM/DD/` 固定日頁與 `/calendar/YYYY/MM/` 月曆。
