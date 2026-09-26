@@ -96,6 +96,7 @@ EOF
 
 cat > "$project_root/src/lib/goblin-overlay.ts" <<'EOF'
 import { getBackgroundTheme, getGoblinOverlay, type BackgroundTheme } from './goblins';
+import { getGoblinPlacement } from './goblin-placements';
 
 const goblinSceneScale = 0.34;
 
@@ -114,6 +115,7 @@ function mountGoblin(stage: HTMLElement): void {
 
   stage.dataset.goblinMounted = 'true';
   const goblin = getGoblinOverlay(dateKey);
+  const placement = getGoblinPlacement(dateKey);
   const theme = getBackgroundTheme(dateKey);
   const canvas = document.createElement('canvas');
   canvas.className = 'daily-goblin-canvas';
@@ -140,13 +142,13 @@ function mountGoblin(stage: HTMLElement): void {
     context.globalAlpha = 0.94;
     context.filter = themeFilters[theme];
 
-    const drawHeight = height * goblin.position.scale * goblinSceneScale;
+    const drawHeight = height * goblin.position.scale * goblinSceneScale * placement.scale;
     const drawWidth = drawHeight * (image.naturalWidth / image.naturalHeight);
-    const centerX = width * goblin.position.x;
-    const bottomY = height * goblin.position.y;
+    const centerX = width * placement.x;
+    const bottomY = height * placement.y;
     context.save();
     context.translate(centerX, bottomY);
-    context.scale(goblin.position.flip ? -1 : 1, 1);
+    context.scale(placement.x > 0.5 ? -1 : 1, 1);
     context.drawImage(image, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
     context.restore();
   };
