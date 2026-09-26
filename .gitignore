@@ -6,3 +6,6 @@ dist/
 .env
 .env.*
 .DS_Store
+
+# 一次性腳本（scaffold、已完成的資產安裝），只留本機不進版控
+scripts/one-off/
