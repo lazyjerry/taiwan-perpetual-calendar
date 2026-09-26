@@ -1,0 +1,15 @@
+{
+  "name": "島日曆",
+  "short_name": "島日曆",
+  "description": "台灣時區的靜態萬年曆，顯示農曆、干支、生肖、節氣與每日宜忌。",
+  "lang": "zh-Hant-TW",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f0e6",
+  "theme_color": "#a5382c",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

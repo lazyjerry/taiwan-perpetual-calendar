@@ -11,7 +11,8 @@
     "deploy:pages": "bash scripts/deploy-pages.sh",
     "test": "vitest run",
     "validate": "tsx scripts/validate-calendar.ts",
-    "check": "bash scripts/check.sh"
+    "check": "bash scripts/check.sh",
+    "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {
     "astro": "7.3.5",
