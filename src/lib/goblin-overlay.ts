@@ -1,5 +1,7 @@
 import { getBackgroundTheme, getGoblinOverlay, type BackgroundTheme } from './goblins';
 
+const goblinSceneScale = 0.34;
+
 const themeFilters: Record<BackgroundTheme, string> = {
   winter: 'drop-shadow(0 10px 16px rgba(20, 30, 38, .34)) saturate(.88) brightness(.96)',
   spring: 'drop-shadow(0 10px 16px rgba(24, 42, 30, .28)) saturate(.92) brightness(1.02)',
@@ -41,7 +43,7 @@ function mountGoblin(stage: HTMLElement): void {
     context.globalAlpha = 0.94;
     context.filter = themeFilters[theme];
 
-    const drawHeight = height * goblin.position.scale;
+    const drawHeight = height * goblin.position.scale * goblinSceneScale;
     const drawWidth = drawHeight * (image.naturalWidth / image.naturalHeight);
     const centerX = width * goblin.position.x;
     const bottomY = height * goblin.position.y;
