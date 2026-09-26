@@ -17,6 +17,12 @@ with sync_playwright() as playwright:
     console_errors = []
     page.on("console", lambda message: console_errors.append(message.text) if message.type == "error" else None)
 
+    page.goto(f"{BASE_URL}/", wait_until="networkidle")
+    assert page.url == f"{BASE_URL}/"
+    assert page.locator("[data-day-page]").count() == 1
+    page.wait_for_selector(".daily-goblin-canvas")
+    assert page.locator(".daily-goblin-canvas").count() == 1
+
     page.goto(f"{BASE_URL}/day/2026/09/25/", wait_until="networkidle")
     assert page.get_by_role("heading", name="2026 年 9 月 25 日").count() == 1
     assert page.get_by_text("農曆八月十五", exact=False).count() >= 1

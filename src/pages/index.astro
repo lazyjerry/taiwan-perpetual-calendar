@@ -15,6 +15,7 @@ const content = getDailyContent(fallbackDate);
 
 <script>
   import { dayHref, getTaipeiDateKey } from '../lib/dates';
+  import '../lib/goblin-overlay';
   const today = getTaipeiDateKey();
   const currentFallback = document.querySelector<HTMLElement>('[data-day-page]')?.dataset.dayPage;
   if (today !== currentFallback) window.location.replace(dayHref(today));
